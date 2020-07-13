@@ -36,7 +36,7 @@ except Exception as e:
 try:
     parsed_json = json.loads(msg.payload.decode("utf8"))
     bme_time = parsed_json['Time']
-    bme_temperature = 9.0/5.0 * parsed_json['BME280']['Temperature'] + 32
+    bme_temperature = round(9.0/5.0 * parsed_json['BME280']['Temperature'] + 32,2)
     bme_humidity = parsed_json['BME280']['Humidity']
     bme_pressure = round(parsed_json['BME280']['Pressure'] * 0.02953,4)
     bme_dewpoint = 9.0/5.0 * parsed_json['BME280']['DewPoint'] + 32
