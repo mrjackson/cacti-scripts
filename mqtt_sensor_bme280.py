@@ -44,6 +44,9 @@ try:
     #bme_time = "2020-07-08T17:42:00"
     bme_age = datetime.utcnow() - datetime.strptime(bme_time, '%Y-%m-%dT%H:%M:%S')
     bme_age = (bme_age.days * 86400) + bme_age.seconds
+    if bme_age > 31536000:
+        #print("Time probably incorrect")
+        bme_age = "U"
 
 except Exception as e:
     logger.error("Script Failed: " + str(datetime.now()) + " -- Processing Error -- " + str(e))
