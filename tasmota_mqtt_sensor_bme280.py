@@ -8,7 +8,7 @@ from logging.handlers import RotatingFileHandler
 from datetime import datetime, timedelta
 import sys
 
-logfile="/var/www/htdocs/cacti/log/cacti-mqtt-sensor-bme280.log"
+logfile="/var/www/htdocs/cacti/log/tasmota-mqtt-sensor-bme280.log"
 
 logger = logging.getLogger("Rotating Log")
 logger.setLevel(logging.DEBUG)
