@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 #./speedtest --server-id=15197 --unit=Mbps --format=json-pretty
 #./speedtest.py 15197 1500 100 100 15
-#https://c.speedtest.net/speedtest-servers-static.php
+#Server List https://c.speedtest.net/speedtest-servers-static.php
+#Download cli client https://www.speedtest.net/apps/cli
+
 
 import sys
 import subprocess
