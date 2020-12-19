@@ -70,6 +70,7 @@ try:
         prevdownload = BpstoMbps(json_string_prev['download']['bandwidth'])
         prevupload = BpstoMbps(json_string_prev['upload']['bandwidth'])
         prevtimestamp = datetime.strptime(json_string_prev['timestamp'], '%Y-%m-%dT%H:%M:%SZ')
+        #logger.info(prevtimestamp)
     else:
         prevupload = 1
         prevdownload = 1
@@ -81,7 +82,7 @@ except Exception as e:
 #Run speedtest and log-output data
 try:
     if (datetime.utcnow() > (prevtimestamp + timedelta(seconds=interval))) or (percentage(slowper, speeddn) > prevdownload) or (percentage(slowper, speedup) > prevupload):
-        logger.info("-- " + str(datetime.now()) + " -- Using new data" )
+        logger.info("-- " + str(datetime.now()) + " -- Using new data")
         json_string=json.loads(speedtest(cmd))
         with open(prevrunfile, 'w') as json_file:
             json.dump(json_string, json_file)
