@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-
+#./CertExpire.py misterjackson.info 443 04AA86C05CB9C8F5D43DC1B88DC25DB5109B no yes yes no
+#./CertExpire.py <hostname> <port> <serial> <unsigned> <serialverify> <hostnameverify> <debug>
 
 from urllib.request import Request, urlopen, ssl, socket
 from urllib.error import URLError, HTTPError
+import urllib3
 import sys
 import datetime
 import time
@@ -23,7 +25,8 @@ serial = "U"
 
 try:
 	hostname = (sys.argv[1])
-	serial = (sys.argv[2])
+	port = (sys.argv[2])
+	serial = (sys.argv[3])
 except Exception as e:
 	logger.error("Script Failed: " + str(datetime.datetime.now()) + " -- Arguments Error -- " + str(e))
 	sys.exit(1)
@@ -31,23 +34,36 @@ except Exception as e:
 results = ""
 
 try:
-	unsigned = (sys.argv[3])
-	debug = (sys.argv[4])
+	unsigned = (sys.argv[4])
+	serialverify = (sys.argv[5])
+	hostnameverify = (sys.argv[6])
+	debug = (sys.argv[7])
 except Exception as e:
 	unsigned = "no"
+	serialverify = "yes"
+	domainverify = "yes"
 	debug = "no"
 
+context = ssl.create_default_context()
+
 if unsigned == "yes":
-	context = ssl._create_unverified_context()
+#	context = ssl._create_unverified_context()
 	#ssl._create_default_https_context = ssl._create_unverified_context
-else:
-	context = ssl.create_default_context()
+#	context = ssl.create_default_context()
+	urllib3.disable_warnings()
+	context.check_hostname = False
+#	context.verify_mode = ssl.CERT_NONE
+#	print("Unverified context")
+#else:
+#	context = ssl.create_default_context()
 #context = ssl.create_default_context()
 #context = ssl._create_unverified_context()
 
 try:
 	with socket.create_connection((hostname, port)) as sock:
+		#print(sock)
 		with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+			#print(ssock)
 			json_string = ssock.getpeercert()
 
 			if (debug == "debug"):
@@ -69,7 +85,7 @@ try:
 	daysbefore = (daysbefore.days)
 	expiredate = datetime.datetime.date(datetime.datetime.strptime(notAfter, "%b %d %H:%M:%S %Y %Z"))
 
-	if serialNumber != serial:
+	if serialNumber != serial and serialverify == "yes":
 		daysafter = -99
 
 	if serial == "U":
@@ -82,7 +98,7 @@ try:
 	else:
 		commonNameCorrected = commonName
 
-	if commonNameCorrected != hostname:
+	if commonNameCorrected != hostname and hostnameverify == "yes":
 		daysafter = -89
 
 	results = "daysafter:" + str(daysafter) + " daysbefore:" + str(daysbefore)
