@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #./CertExpire.py misterjackson.info 443 04AA86C05CB9C8F5D43DC1B88DC25DB5109B no yes yes no
 #./CertExpire.py <hostname> <port> <serial> <verifyserial> <verifycn>
-
+#pip3 install pyopenssl
 #thold: Incorrect serial = daysafter:-99, incorrect commonname = daysbefore:99
 
 import socket
