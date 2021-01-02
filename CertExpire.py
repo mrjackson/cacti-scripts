@@ -58,7 +58,7 @@ try:
 
 	notBefore = datetime.datetime.strptime(x509.get_notBefore().decode('ascii'), '%Y%m%d%H%M%SZ')
 	notAfter = datetime.datetime.strptime(x509.get_notAfter().decode('ascii'), '%Y%m%d%H%M%SZ')
-	serialNumber = str(x509.get_serial_number())
+	serialNumber = hex(x509.get_serial_number())
 	commonName = x509.get_subject().CN
 
 	daysafter = (notAfter - today).days
