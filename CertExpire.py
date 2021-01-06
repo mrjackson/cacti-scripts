@@ -8,6 +8,7 @@ import socket
 import ssl
 import OpenSSL.crypto as crypto
 import datetime
+from datetime import timezone
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
@@ -20,7 +21,8 @@ logger.addHandler(handler)
 
 logger.info("Script started: " + str(datetime.datetime.now()))
 logger.info("Script Arguments: " + str(sys.argv))
-today = datetime.datetime.today()
+#today = datetime.datetime.today()
+today = datetime.datetime.now(timezone.utc)
 
 try:
 	hostname = (sys.argv[1])
@@ -60,9 +62,15 @@ try:
 	notAfter = datetime.datetime.strptime(x509.get_notAfter().decode('ascii'), '%Y%m%d%H%M%SZ')
 	serialNumber = hex(x509.get_serial_number())
 	commonName = x509.get_subject().CN
+	notBefore = (notBefore.replace(tzinfo=timezone.utc))
+	notAfter = (notAfter.replace(tzinfo=timezone.utc))
+	#print(notAfter)
 
-	daysafter = (notAfter - today).days
-	daysbefore = (notBefore - today).days
+	daysafter = ((notAfter - today).total_seconds() / 86400)
+	daysbefore = ((notBefore - today).total_seconds() / 86400)
+
+	#daysafter = (notAfter - today).days
+	#daysbefore = (notBefore - today).days
 	expiredate = notAfter
 
 	#print(commonName[0])
@@ -78,7 +86,7 @@ try:
 	if serialNumber != serial and verifyserial == "yes":
 		daysafter = -99
 
-	results = "daysafter:" + str(daysafter) + " daysbefore:" + str(daysbefore)
+	results = "daysafter:" + str(round(daysafter,2)) + " daysbefore:" + str(round(daysbefore,2))
 	#Uncomment line below to force fake data
 	#results = "daysafter:60 daysbefore:-348 expirereg:55"
 	print(results)
