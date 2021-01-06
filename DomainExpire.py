@@ -6,6 +6,7 @@ from urllib.request import Request, urlopen, ssl, socket
 from urllib.error import URLError, HTTPError
 import sys
 import datetime
+from datetime import timezone
 import time
 import json
 import whois
@@ -19,7 +20,7 @@ logger.addHandler(handler)
 
 logger.info("Script started: " + str(datetime.datetime.now()))
 
-today = datetime.datetime.today()
+today = datetime.datetime.now(timezone.utc)
 port = '443'
 serial = "U"
 
@@ -49,16 +50,18 @@ try:
 #	except:
 #		e = sys.exc_info()[0]
 #		logger.error("Script Error: " + str(datetime.datetime.now()) + " -- " + sys.argv[1] + " -- " + str(e))
-
-	#print(w)
+#
+#	print(w)
 	#print(type(w.expiration_date))
 	if type(w.expiration_date) is not list:
 		expiredate = w.expiration_date
 	else:
 		expiredate = w.expiration_date[0]
+	expiredate = (expiredate.replace(tzinfo=timezone.utc))
 
-	expirereg = (expiredate - today).days
-	results = "expirereg:" + str(expirereg)
+	#expirereg = (expiredate - today).days
+	expirereg = ((expiredate - today).total_seconds() / 86400)
+	results = "expirereg:" + str(round(expirereg,2))
 	#Uncomment line below to force fake data
 	#results = "daysafter:60 daysbefore:-348 expirereg:55"
 	print(results)
